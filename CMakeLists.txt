@@ -16,9 +16,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 set(GLAD_DIR "${CMAKE_SOURCE_DIR}/3rdparty/glad")
 set(GLFW_DIR "${CMAKE_SOURCE_DIR}/3rdparty/glfw")
+set(SALAD_DIR "${CMAKE_SOURCE_DIR}/3rdparty/salad")
 
 add_subdirectory(${GLAD_DIR})
 add_subdirectory(${GLFW_DIR})
+add_subdirectory(${SALAD_DIR})
 
 # ------------------------------------------------------------------------------------------------ #
 
@@ -32,6 +34,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE opengl32
     PRIVATE glad
     PRIVATE glfw
+    PRIVATE salad
 )
 
 # ------------------------------------------------------------------------------------------------ #
