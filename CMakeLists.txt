@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 4.2.0)
+
+project(gpudsp LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+
+
+file(GLOB_RECURSE SOURCES CMAKE_CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/src/*.cpp)
+
+add_executable(${PROJECT_NAME})
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+# target_link_libraries()
