@@ -8,7 +8,7 @@ not really optimised for high performance. If you're after that go check out [GP
 ## Setup
 To clone the project use
 ```
-git clone https://github.com/JulianKonowalski/gpudsp.git
+git clone --recurse-submodules https://github.com/JulianKonowalski/gpudsp.git
 ```
 then configure and build using
 ```
