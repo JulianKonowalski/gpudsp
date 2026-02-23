@@ -43,11 +43,7 @@ Source::~Source(void) {
 
 /*----------------------------------------------------------------------------*/
 
-bool Source::isValid(void) {
-    return (bool)alIsSource(m_al_source);
-}
-
-
+bool Source::isValid(void) { return (bool)alIsSource(m_al_source); }
 
 /*----------------------------------------------------------------------------*/
 
