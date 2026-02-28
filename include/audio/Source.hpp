@@ -2,6 +2,8 @@
 #define AUDIO_SOURCE_HPP
 #pragma once
 
+#include <vector>
+
 #include "audio/Buffer.hpp"
 
 namespace gpudsp::audio {
@@ -26,6 +28,8 @@ public:
     void stop(void);
 
     void attachBuffer(const Buffer& buffer);
+    void queueBuffers(const std::vector<Buffer>& buffers);
+    uint32_t unqueueOne(void);
 
     bool isValid(void);
     State getState(void);
