@@ -22,7 +22,7 @@ public:
 
     bool isValid(void);
     void setData(const std::vector<uint8_t>& samples, const uint32_t sample_rate, const Type type);
-    void setData(const std::vector<uint16_t>& samples, const uint32_t sample_rate, const Type type);
+    void setData(const std::vector<int16_t>& samples, const uint32_t sample_rate, const Type type);
 
 private:
 
