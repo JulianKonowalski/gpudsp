@@ -15,14 +15,14 @@ Source::Source(void) : m_al_source(0) {
         switch(alGetError()) {
             case AL_OUT_OF_MEMORY:
                 throw std::runtime_error(
-                    "There is not enough memory to generate all the requested \
-                    sources."
+                    "There is not enough memory to generate all the requested "
+                    "sources."
                 );
             break;
             case AL_INVALID_VALUE:
                 throw std::runtime_error(
-                    "There are not enough non-memory resources to create all \
-                    the requested sources, or the array pointer is not valid."
+                    "There are not enough non-memory resources to create all "
+                    "the requested sources, or the array pointer is not valid."
                 );
             break;
             case AL_INVALID_OPERATION:
@@ -43,20 +43,6 @@ Source::~Source(void) {
 
 /*----------------------------------------------------------------------------*/
 
-bool Source::isValid(void) {
-    #ifdef DEBUG
-        bool is_valid = alIsSource(m_al_source);
-        if (alGetError() != AL_NO_ERROR) {
-            throw std::runtime_error("There is no current context.");
-        }
-        return is_valid;
-    #else
-        return (bool)alIsSource(m_al_source);
-    #endif
-}
-
-/*----------------------------------------------------------------------------*/
-
 void Source::play(void) {
     alSourcePlay(m_al_source);
 
@@ -65,8 +51,8 @@ void Source::play(void) {
         if (err != AL_NO_ERROR) {
             switch(err) {
                 case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not \
-                        valid");
+                    throw std::runtime_error("The specified source name is not "
+                        "valid.");
                 break;
                 case AL_INVALID_OPERATION:
                     throw std::runtime_error("The is no current context.");
@@ -86,8 +72,8 @@ void Source::pause(void) {
         if (err != AL_NO_ERROR) {
             switch(err) {
                 case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not \
-                        valid");
+                    throw std::runtime_error("The specified source name is not "
+                        "valid.");
                 break;
                 case AL_INVALID_OPERATION:
                     throw std::runtime_error("The is no current context.");
@@ -107,39 +93,11 @@ void Source::stop(void) {
         if (err != AL_NO_ERROR) {
             switch(err) {
                 case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not \
-                        valid");
+                    throw std::runtime_error("The specified source name is not "
+                        "valid.");
                 break;
                 case AL_INVALID_OPERATION:
                     throw std::runtime_error("The is no current context.");
-                break;
-            }
-        }
-    #endif
-}
-
-/*----------------------------------------------------------------------------*/
-
-void Source::setLooping(const bool looping) {
-    alSourcei(m_al_source, AL_LOOPING, looping ? AL_TRUE : AL_FALSE);
-
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error("The value given is out of range.");
-                break;
-                case AL_INVALID_ENUM:
-                    throw std::runtime_error("The specified parameter is not \
-                        valid");
-                break;
-                case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source  name is \
-                        not valid.");
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("There is no current context.");
                 break;
             }
         }
@@ -159,12 +117,12 @@ void Source::attachBuffer(const Buffer& buffer) {
                     throw std::runtime_error("The value given is out of range.");
                 break;
                 case AL_INVALID_ENUM:
-                    throw std::runtime_error("The specified parameter is not \
-                        valid");
+                    throw std::runtime_error("The specified parameter is not "
+                        "valid.");
                 break;
                 case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source  name is \
-                        not valid.");
+                    throw std::runtime_error("The specified source  name is "
+                        "not valid.");
                 break;
                 case AL_INVALID_OPERATION:
                     throw std::runtime_error("There is no current context.");
@@ -172,6 +130,73 @@ void Source::attachBuffer(const Buffer& buffer) {
             }
         }
     #endif
+}
+
+/*----------------------------------------------------------------------------*/
+
+bool Source::isValid(void) {
+    #ifdef DEBUG
+        bool is_valid = alIsSource(m_al_source);
+        if (alGetError() != AL_NO_ERROR) {
+            throw std::runtime_error("There is no current context.");
+        }
+        return is_valid;
+    #else
+        return (bool)alIsSource(m_al_source);
+    #endif
+}
+
+/*----------------------------------------------------------------------------*/
+
+Source::State Source::getState(void) {
+    switch(getAlProperty(AL_SOURCE_STATE)) {
+        case AL_PLAYING: return Source::State::PLAYING;
+        case AL_PAUSED: return Source::State::PAUSED;
+        case AL_STOPPED: return Source::State::STOPPED;
+        default: return Source::State::UNDEFINED;
+    }
+}
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Source::getCurrentBuffer(void) { return this->getAlProperty(AL_BUFFER); }
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Source::getNumQueuedBuffers(void) { return this->getAlProperty(AL_BUFFERS_QUEUED); }
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Source::getNumProcessedBuffers(void) { return this->getAlProperty(AL_BUFFERS_PROCESSED); }
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Source::getAlProperty(const uint32_t property) {
+    int value;
+    alGetSourcei(m_al_source, AL_BUFFER, &value);
+    #ifdef DEBUG
+        ALenum err = alGetError();
+        if (err != AL_NO_ERROR) {
+            switch(err) {
+                case AL_INVALID_VALUE:
+                    throw std::runtime_error("The value pointer given is not "
+                        "valid.");
+                break;
+                case AL_INVALID_ENUM:
+                    throw std::runtime_error("The specified parameter is not "
+                        "valid.");
+                break;
+                case AL_INVALID_NAME:
+                    throw std::runtime_error("The specified source name is not "
+                        "valid");
+                break;
+                case AL_INVALID_OPERATION:
+                    throw std::runtime_error("There is no current context.");
+                break;
+            }
+        }
+    #endif
+    return value;
 }
 
 /*----------------------------------------------------------------------------*/

@@ -15,14 +15,14 @@ Buffer::Buffer(void) : m_al_buffer(0) {
         switch (alGetError()) {
             case AL_INVALID_VALUE:
                 throw std::runtime_error(
-                    "The buffer array isn't large enough to hold the number of \
-                    buffers requested."
+                    "The buffer array isn't large enough to hold the number of "
+                    "buffers requested."
                 );
             break;
             case AL_OUT_OF_MEMORY:
                 throw std::runtime_error(
-                    "There is not enough memory available to generate all the \
-                    buffers requested."
+                    "There is not enough memory available to generate all the "
+                    "buffers requested."
                 );
             break;
         }
@@ -53,7 +53,7 @@ void Buffer::setData(
         samples.data(),
         samples.size() * sizeof(uint8_t),
         sample_rate
-    ); 
+    );
     
     #ifdef DEBUG
         ALenum err = alGetError();
@@ -61,15 +61,15 @@ void Buffer::setData(
             switch(err) {
                 case AL_OUT_OF_MEMORY:
                     throw std::runtime_error(
-                        "There is not enough memory available to create this \
-                        buffer."
+                        "There is not enough memory available to create this "
+                        "buffer."
                     );
                 break;
                 case AL_INVALID_VALUE:
                     throw std::runtime_error(
-                        "The size parameter is not valid for the format \
-                        specified, the buffer is in use, or the data is a \
-                        nullptr."
+                        "The size parameter is not valid for the format "
+                        "specified, the buffer is in use, or the data is a "
+                        "nullptr."
                     );
                 break;
                 case AL_INVALID_ENUM:
@@ -103,15 +103,15 @@ void Buffer::setData(
             switch(err) {
                 case AL_OUT_OF_MEMORY:
                     throw std::runtime_error(
-                        "There is not enough memory available to create this \
-                        buffer."
+                        "There is not enough memory available to create this "
+                        "buffer."
                     );
                 break;
                 case AL_INVALID_VALUE:
                     throw std::runtime_error(
-                        "The size parameter is not valid for the format \
-                        specified, the buffer is in use, or the data is a \
-                        nullptr."
+                        "The size parameter is not valid for the format "
+                        "specified, the buffer is in use, or the data is a "
+                        "nullptr."
                     );
                 break;
                 case AL_INVALID_ENUM:

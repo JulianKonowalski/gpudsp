@@ -11,18 +11,31 @@ namespace gpudsp::audio {
 class Source final {
 public:
 
+    enum class State {
+        PLAYING,
+        PAUSED,
+        STOPPED,
+        UNDEFINED
+    };
+
     Source(void);
     ~Source(void);
 
-    bool isValid(void);
     void play(void);
     void pause(void);
     void stop(void);
 
-    void setLooping(const bool looping);
     void attachBuffer(const Buffer& buffer);
 
+    bool isValid(void);
+    State getState(void);
+    uint32_t getCurrentBuffer(void);
+    uint32_t getNumQueuedBuffers(void);
+    uint32_t getNumProcessedBuffers(void);
+
 private:
+
+    uint32_t getAlProperty(const uint32_t property);
 
     uint32_t m_al_source;
 
