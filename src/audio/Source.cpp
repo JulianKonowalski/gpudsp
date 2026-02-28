@@ -173,7 +173,7 @@ uint32_t Source::getNumProcessedBuffers(void) { return this->getAlProperty(AL_BU
 
 uint32_t Source::getAlProperty(const uint32_t property) {
     int value;
-    alGetSourcei(m_al_source, AL_BUFFER, &value);
+    alGetSourcei(m_al_source, property, &value);
     #ifdef DEBUG
         ALenum err = alGetError();
         if (err != AL_NO_ERROR) {
