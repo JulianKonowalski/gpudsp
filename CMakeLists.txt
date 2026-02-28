@@ -11,6 +11,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
+set(CMAKE_BUILD_TYPE DEBUG)
 
 #------------------------------------------------------------------------------#
 
@@ -36,5 +37,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE glfw
     PRIVATE salad
 )
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG)
 
 #------------------------------------------------------------------------------#
