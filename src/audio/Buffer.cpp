@@ -85,7 +85,7 @@ void Buffer::setData(
 /*----------------------------------------------------------------------------*/
 
 void Buffer::setData(
-    const std::vector<uint16_t>& samples,
+    const std::vector<int16_t>& samples,
     const uint32_t sample_rate,
     const Type type
 ) {
@@ -93,7 +93,7 @@ void Buffer::setData(
         m_al_buffer,
         type == Type::MONO ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16,
         samples.data(),
-        samples.size() * sizeof(uint16_t),
+        samples.size() * sizeof(int16_t),
         sample_rate
     );
 
