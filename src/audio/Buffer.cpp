@@ -56,7 +56,7 @@ void Buffer::setData(
     ); 
     
     #ifdef DEBUG
-        const auto err = alGetError();
+        ALenum err = alGetError();
         if (err != AL_NO_ERROR) {
             switch(err) {
                 case AL_OUT_OF_MEMORY:
@@ -98,7 +98,7 @@ void Buffer::setData(
     );
 
     #ifdef DEBUG
-        const auto err = alGetError();
+        ALenum err = alGetError();
         if (err != AL_NO_ERROR) {
             switch(err) {
                 case AL_OUT_OF_MEMORY:
