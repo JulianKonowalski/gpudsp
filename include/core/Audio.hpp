@@ -2,7 +2,6 @@
 #define CORE_AUDIO_HPP
 #pragma once
 
-#include <mutex>
 #include <thread>
 #include <vector>
 #include <cstdint>
@@ -34,13 +33,18 @@ public:
         Callback callback = s_default_callback;
         uint16_t sample_rate = 0; //system's default
         uint16_t buffer_size = 2048;
+        bool is_running = false;
     };
 
     static Audio* getInstance(const AudioParameters& parameters = AudioParameters::Default());
+    inline uint16_t getSampleRate(void) { return m_parameters.sample_rate; }
+    inline uint16_t getBufferSize(void) { return m_parameters.buffer_size; }
+    inline bool isRunning(void) { return m_parameters.is_running; }
 
-    inline void setCallback(const Callback& callback) { m_callback = callback; }
+    inline void setCallback(const Callback& callback) { m_parameters.callback = callback; }
 
     void start(void);
+    void stop(void);
 
 private:
 
@@ -51,19 +55,15 @@ private:
     void fillBuffer(gpudsp::audio::Buffer& buffer);
 
     static Audio* s_instance;
-
-    bool m_is_running;
-    const uint16_t m_sample_rate;
-    const uint16_t m_buffer_size;
     
-    std::mutex m_mutex;
     std::thread m_audio_thread;
     std::vector<float> m_samplesf;
     std::vector<int16_t> m_samplesi;
 
-    Callback m_callback;
     gpudsp::audio::Device m_device;
     gpudsp::audio::Context m_context;
+
+    AudioParameters m_parameters;
 
 };
 

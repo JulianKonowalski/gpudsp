@@ -33,38 +33,39 @@ Audio* Audio::getInstance(const AudioParameters& parameters) {
 /*----------------------------------------------------------------------------*/
 
 void Audio::start(void) {
-    m_is_running = true;
+    m_parameters.is_running = true;
     m_audio_thread = std::thread(&Audio::run, this);
     m_audio_thread.detach();
 }
 
 /*----------------------------------------------------------------------------*/
 
-Audio::Audio(
-    const AudioParameters& parameters
-) : m_is_running(false),
-    m_sample_rate(parameters.sample_rate),
-    m_buffer_size(parameters.buffer_size),
-    m_callback(parameters.callback),
-    m_context(m_device, { parameters.sample_rate, 0, 0, 0, false }) 
-{
-    m_samplesf.resize(m_buffer_size * 2);
-    m_samplesi.resize(m_buffer_size * 2);
+void Audio::stop(void) { 
+    if (m_audio_thread.joinable()) { m_audio_thread.join(); }
+    m_parameters.is_running = false; 
 }
 
 /*----------------------------------------------------------------------------*/
 
-Audio::~Audio(void) { 
-    if (m_audio_thread.joinable()) { m_audio_thread.join(); }
-    m_is_running = false;
-    std::lock_guard<std::mutex> lock(m_mutex); // wait for Audio::run to finish
+Audio::Audio(
+    const AudioParameters& parameters
+) : m_parameters(parameters),
+    m_context(m_device, { parameters.sample_rate, 0, 0, 0, false }) 
+{
+    // both channels are stored in one, contiguous buffer
+    uint32_t buffer_size = m_parameters.buffer_size * 2; 
+    m_samplesf.resize(buffer_size);
+    m_samplesi.resize(buffer_size);
+    if (m_parameters.is_running) { this->start(); }
 }
+
+/*----------------------------------------------------------------------------*/
+
+Audio::~Audio(void) { this->stop(); }
 
 /*----------------------------------------------------------------------------*/
 
 void Audio::run(void) {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    
     m_context.makeCurrent();
     
     gpudsp::audio::Source source;
@@ -75,7 +76,7 @@ void Audio::run(void) {
     source.play();
 
     uint8_t buf_idx = 0;
-    while (m_is_running) {
+    while (m_parameters.is_running) {
         while (source.getNumProcessedBuffers() > 0) {
             source.unqueueOne();
             this->fillBuffer(buffers[buf_idx]);
@@ -90,9 +91,9 @@ void Audio::run(void) {
 /*----------------------------------------------------------------------------*/
 
 void Audio::fillBuffer(gpudsp::audio::Buffer& buffer) {
-    m_callback(m_samplesf.data(), m_buffer_size, 2);
-    for (int j = 0; j < m_buffer_size * 2; ++j) { m_samplesi[j] = m_samplesf[j] * 32767; }
-    buffer.setData(m_samplesi, m_sample_rate, gpudsp::audio::Buffer::Type::STEREO);      
+    m_parameters.callback(m_samplesf.data(), m_parameters.buffer_size, 2);
+    for (int j = 0; j < m_parameters.buffer_size * 2; ++j) { m_samplesi[j] = m_samplesf[j] * 32767; }
+    buffer.setData(m_samplesi, m_parameters.sample_rate, gpudsp::audio::Buffer::Type::STEREO);      
 }
 
 /*----------------------------------------------------------------------------*/
