@@ -1,43 +1,29 @@
 #include <cmath>
 #include <iostream>
 
-#include <AL/salad.h>
-
-#include "audio/Device.hpp"
-#include "audio/Context.hpp"
-#include "audio/Buffer.hpp"
-#include "audio/Source.hpp"
+#include "core/Audio.hpp"
 
 int main(void) {
-    if (!saladLoadALdefault()) { 
-        std::cout << "Failed to load OpenAL functions.\n";
-        exit(-1);
-    }
+    float angle = 0.0f;
+    const float offset = (2.0f * 3.1415f * 440.0f) / 44100.0f;
+    gpudsp::core::Audio::Callback cb = [&angle, &offset] (
+        float* buffer,
+        uint16_t buffer_size,
+        uint8_t num_channels
+    ) {
+        float sample = 0.0f;
+        for (int i = 0; i < buffer_size * num_channels; i += num_channels) {
+            sample = std::sinf(angle);
+            angle += offset;
+            angle -= angle < 2.0f * 3.1415f ? 0.0f : 2.0f * 3.1415f;
+            for (int j = 0; j < num_channels; ++j) { buffer[i + j] = sample; }
+        }
+    };
 
-    for (const auto& device : gpudsp::audio::Device::getAvailableDevices()) {
-        std::cout << device << "\n";
-    }
-
-    std::vector<uint16_t> samples;
-    samples.reserve(44100);
-    double offset = (2 * 3.1415 * 440.0f) / 44100.0;
-    for (int i = 0; i < 44100; ++i) { samples.push_back(sinf(i * offset) * 32767); }
-
-    gpudsp::audio::Device device;
-    gpudsp::audio::Context context(device);
-    context.makeCurrent();
-
-    gpudsp::audio::Buffer buffer;
-    buffer.setData(samples, 44100, gpudsp::audio::Buffer::Type::MONO);
-
-    gpudsp::audio::Source source;
-    source.setLooping(true);
-    source.attachBuffer(buffer);
-    source.play();
+    gpudsp::core::Audio* audio = gpudsp::core::Audio::getInstance(cb, 44100, 2048);
+    audio->start();
 
     char c;
-    std::cout << "Press any button to stop\n";
+    std::cout << "Press any key to exit\n";
     std::cin >> c;
-    
-    source.stop();
 }
