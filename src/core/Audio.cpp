@@ -20,16 +20,12 @@ const Audio::Callback Audio::s_default_callback = [](float* b, uint16_t s, uint8
 
 /*----------------------------------------------------------------------------*/
 
-Audio* Audio::getInstance(
-    const Callback& callback,
-    const uint16_t sample_rate,
-    const uint16_t buffer_size 
-) {
+Audio* Audio::getInstance(const AudioParameters& parameters) {
     if (!s_instance) {
         if (!saladLoadALdefault()) { 
             throw std::runtime_error("Failed to initialize OpenAL functions"); 
         }       
-        s_instance = new Audio(callback, sample_rate, buffer_size); 
+        s_instance = new Audio(parameters); 
     }
     return s_instance;
 }
@@ -45,14 +41,12 @@ void Audio::start(void) {
 /*----------------------------------------------------------------------------*/
 
 Audio::Audio(
-    const Callback& callback,
-    const uint16_t sample_rate,
-    const uint16_t buffer_size
+    const AudioParameters& parameters
 ) : m_is_running(false),
-    m_sample_rate(sample_rate),
-    m_buffer_size(buffer_size),
-    m_callback(callback),
-    m_context(m_device, { sample_rate, 0, 0, 0, false }) 
+    m_sample_rate(parameters.sample_rate),
+    m_buffer_size(parameters.buffer_size),
+    m_callback(parameters.callback),
+    m_context(m_device, { parameters.sample_rate, 0, 0, 0, false }) 
 {
     m_samplesf.resize(m_buffer_size * 2);
     m_samplesi.resize(m_buffer_size * 2);

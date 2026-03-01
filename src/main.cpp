@@ -20,7 +20,7 @@ int main(void) {
         }
     };
 
-    gpudsp::core::Audio* audio = gpudsp::core::Audio::getInstance(cb, 44100, 2048);
+    gpudsp::core::Audio* audio = gpudsp::core::Audio::getInstance({ cb, 44100, 2048 });
     audio->start();
 
     char c;

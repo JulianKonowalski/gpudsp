@@ -22,11 +22,21 @@ public:
     using Callback = std::function<void(float*,uint16_t,uint8_t)>;
     static const Callback s_default_callback;
 
-    static Audio* getInstance(
-        const Callback& callback = s_default_callback,
-        const uint16_t sample_rate = 0, // system's default
-        const uint16_t buffer_size = 2048
-    );
+    struct AudioParameters {
+
+        /**
+         * This looks weird, but both clang and gcc 
+         * will throw errors when using the default
+         * constructor. It's a known bug.
+         */
+        inline static AudioParameters Default(void) { return {}; }
+
+        Callback callback = s_default_callback;
+        uint16_t sample_rate = 0; //system's default
+        uint16_t buffer_size = 2048;
+    };
+
+    static Audio* getInstance(const AudioParameters& parameters = AudioParameters::Default());
 
     inline void setCallback(const Callback& callback) { m_callback = callback; }
 
@@ -34,7 +44,7 @@ public:
 
 private:
 
-    Audio(const Callback& callback, const uint16_t sample_rate, const uint16_t buffer_size);
+    Audio(const AudioParameters& parameters);
     ~Audio(void);
 
     void run(void);
