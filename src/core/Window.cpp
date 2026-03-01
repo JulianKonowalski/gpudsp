@@ -43,7 +43,7 @@ void Window::makeCurrent(void) { glfwMakeContextCurrent((GLFWwindow*)m_glfw_wind
 
 /*----------------------------------------------------------------------------*/
 
-bool Window::shouldClose(void) { return glfwWindowShouldClose((GLFWwindow*)m_glfw_window); }
+bool Window::shouldClose(void) { return (bool)glfwWindowShouldClose((GLFWwindow*)m_glfw_window); }
 
 /*----------------------------------------------------------------------------*/
 
