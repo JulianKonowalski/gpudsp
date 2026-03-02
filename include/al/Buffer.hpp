@@ -1,11 +1,11 @@
-#ifndef AUDIO_BUFFER_HPP
-#define AUDIO_BUFFER_HPP
+#ifndef AL_BUFFER_HPP 
+#define AL_BUFFER_HPP
 #pragma once
 
 #include <vector>
 #include <cstdint>
 
-namespace gpudsp::audio {
+namespace gpudsp::al {
 
 /*----------------------------------------------------------------------------*/
 

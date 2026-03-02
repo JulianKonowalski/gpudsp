@@ -1,10 +1,10 @@
-#include "audio/Device.hpp"
+#include "al/Device.hpp"
 
 #include <stdexcept>
 
 #include <AL/alc.h>
 
-using namespace gpudsp::audio;
+using namespace gpudsp::al;
 
 /*----------------------------------------------------------------------------*/
 

@@ -1,4 +1,4 @@
-#include "audio/Context.hpp"
+#include "al/Context.hpp"
 
 #include <vector>
 #include <stdexcept>
@@ -6,7 +6,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
-using namespace gpudsp::audio;
+using namespace gpudsp::al;
 
 /*----------------------------------------------------------------------------*/
 

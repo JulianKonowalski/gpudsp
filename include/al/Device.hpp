@@ -1,11 +1,11 @@
-#ifndef AUDIO_DEVICE_HPP
-#define AUDIO_DEVICE_HPP
+#ifndef AL_DEVICE_HPP 
+#define AL_DEVICE_HPP
 #pragma once
 
 #include <string>
 #include <vector>
 
-namespace gpudsp::audio {
+namespace gpudsp::al {
 
 /*----------------------------------------------------------------------------*/
 

@@ -1,12 +1,12 @@
-#ifndef AUDIO_CONTEXT_HPP
-#define AUDIO_CONTEXT_HPP
+#ifndef AL_CONTEXT_HPP 
+#define AL_CONTEXT_HPP
 #pragma once
 
 #include <cstdint>
 
-#include "audio/Device.hpp"
+#include "al/Device.hpp"
 
-namespace gpudsp::audio {
+namespace gpudsp::al {
 
 /*----------------------------------------------------------------------------*/
 

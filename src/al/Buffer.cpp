@@ -1,10 +1,10 @@
-#include "audio/Buffer.hpp"
+#include "al/Buffer.hpp"
 
 #include <stdexcept>
 
 #include <AL/al.h>
 
-using namespace gpudsp::audio;
+using namespace gpudsp::al;
 
 /*----------------------------------------------------------------------------*/
 

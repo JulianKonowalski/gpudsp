@@ -1,12 +1,12 @@
-#ifndef AUDIO_SOURCE_HPP
-#define AUDIO_SOURCE_HPP
+#ifndef AL_SOURCE_HPP
+#define AL_SOURCE_HPP
 #pragma once
 
 #include <vector>
 
-#include "audio/Buffer.hpp"
+#include "al/Buffer.hpp"
 
-namespace gpudsp::audio {
+namespace gpudsp::al {
 
 /*----------------------------------------------------------------------------*/
 
