@@ -21,7 +21,10 @@ const Audio::Callback Audio::s_default_callback = [](float* b, uint16_t s, uint8
 /*----------------------------------------------------------------------------*/
 
 Audio* Audio::getInstance(const AudioParameters& parameters) {
-    if (!s_instance) { s_instance = new Audio(parameters); }
+    if (!s_instance) { 
+        if (!saladLoadALdefault()) { throw std::runtime_error("Failed to initialize OpenAL functions"); }
+        s_instance = new Audio(parameters); 
+    }
     return s_instance;
 }
 
@@ -45,12 +48,9 @@ void Audio::stop(void) {
 Audio::Audio(
     const AudioParameters& parameters
 ) : m_parameters(parameters),
+    m_device(""),
     m_context(m_device, { parameters.sample_rate, 0, 0, 0, false }) 
 {
-    if (!saladLoadALdefault()) { 
-        throw std::runtime_error("Failed to initialize OpenAL functions"); 
-    }
-
     // both channels are stored in one, contiguous buffer
     uint32_t buffer_size = m_parameters.buffer_size * 2; 
     m_samplesf.resize(buffer_size);
