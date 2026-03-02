@@ -7,9 +7,9 @@
 #include <cstdint>
 #include <functional>
 
-#include "audio/Buffer.hpp"
-#include "audio/Device.hpp"
-#include "audio/Context.hpp"
+#include "al/Buffer.hpp"
+#include "al/Device.hpp"
+#include "al/Context.hpp"
 
 namespace gpudsp::core {
 
@@ -52,7 +52,7 @@ private:
     ~Audio(void);
 
     void run(void);
-    void fillBuffer(gpudsp::audio::Buffer& buffer);
+    void fillBuffer(gpudsp::al::Buffer& buffer);
 
     static Audio* s_instance;
     
@@ -60,8 +60,8 @@ private:
     std::vector<float> m_samplesf;
     std::vector<int16_t> m_samplesi;
 
-    gpudsp::audio::Device m_device;
-    gpudsp::audio::Context m_context;
+    gpudsp::al::Device m_device;
+    gpudsp::al::Context m_context;
 
     AudioParameters m_parameters;
 

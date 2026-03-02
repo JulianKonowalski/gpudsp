@@ -6,7 +6,7 @@
 
 #include <AL/salad.h>
 
-#include "audio/Source.hpp"
+#include "al/Source.hpp"
 
 using namespace gpudsp::core;
 
@@ -67,8 +67,8 @@ Audio::~Audio(void) { this->stop(); }
 void Audio::run(void) {
     m_context.makeCurrent();
     
-    gpudsp::audio::Source source;
-    gpudsp::audio::Buffer buffers[2];
+    gpudsp::al::Source source;
+    gpudsp::al::Buffer buffers[2];
 
     for (int i = 0; i < 2; ++i) { this->fillBuffer(buffers[i]); }
     source.queueBuffers({ buffers[0], buffers[1] });
@@ -89,10 +89,10 @@ void Audio::run(void) {
 
 /*----------------------------------------------------------------------------*/
 
-void Audio::fillBuffer(gpudsp::audio::Buffer& buffer) {
+void Audio::fillBuffer(gpudsp::al::Buffer& buffer) {
     m_parameters.callback(m_samplesf.data(), m_parameters.buffer_size, 2);
     for (int j = 0; j < m_parameters.buffer_size * 2; ++j) { m_samplesi[j] = m_samplesf[j] * 32767; }
-    buffer.setData(m_samplesi, m_parameters.sample_rate, gpudsp::audio::Buffer::Type::STEREO);      
+    buffer.setData(m_samplesi, m_parameters.sample_rate, gpudsp::al::Buffer::Type::STEREO);      
 }
 
 /*----------------------------------------------------------------------------*/
