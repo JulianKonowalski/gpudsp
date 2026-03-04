@@ -11,6 +11,8 @@ using namespace gpudsp::al;
 Buffer::Buffer(void) : m_al_buffer(0) {
     alGetError();
     alGenBuffers(1, &m_al_buffer);
+
+#ifndef GPUDSP_AL_NOTHROW
     if (!m_al_buffer) {
         switch (alGetError()) {
             case AL_INVALID_VALUE:
@@ -27,6 +29,8 @@ Buffer::Buffer(void) : m_al_buffer(0) {
             break;
         }
     }
+#endif
+
 }
 
 /*----------------------------------------------------------------------------*/
@@ -71,31 +75,32 @@ void Buffer::setData(
         sample_rate
     );
     
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_OUT_OF_MEMORY:
-                    throw std::runtime_error(
-                        "There is not enough memory available to create this "
-                        "buffer."
-                    );
-                break;
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error(
-                        "The size parameter is not valid for the format "
-                        "specified, the buffer is in use, or the data is a "
-                        "nullptr."
-                    );
-                break;
-                case AL_INVALID_ENUM:
-                    throw std::runtime_error(
-                        "The specified format does not exist."
-                    );
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_OUT_OF_MEMORY:
+                throw std::runtime_error(
+                    "There is not enough memory available to create this "
+                    "buffer."
+                );
+            break;
+            case AL_INVALID_VALUE:
+                throw std::runtime_error(
+                    "The size parameter is not valid for the format "
+                    "specified, the buffer is in use, or the data is a "
+                    "nullptr."
+                );
+            break;
+            case AL_INVALID_ENUM:
+                throw std::runtime_error(
+                    "The specified format does not exist."
+                );
+            break;
         }
-    #endif
+    }
+#endif
+
 }
 
 /*----------------------------------------------------------------------------*/
@@ -113,31 +118,32 @@ void Buffer::setData(
         sample_rate
     );
 
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_OUT_OF_MEMORY:
-                    throw std::runtime_error(
-                        "There is not enough memory available to create this "
-                        "buffer."
-                    );
-                break;
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error(
-                        "The size parameter is not valid for the format "
-                        "specified, the buffer is in use, or the data is a "
-                        "nullptr."
-                    );
-                break;
-                case AL_INVALID_ENUM:
-                    throw std::runtime_error(
-                        "The specified format does not exist."
-                    );
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_OUT_OF_MEMORY:
+                throw std::runtime_error(
+                    "There is not enough memory available to create this "
+                    "buffer."
+                );
+            break;
+            case AL_INVALID_VALUE:
+                throw std::runtime_error(
+                    "The size parameter is not valid for the format "
+                    "specified, the buffer is in use, or the data is a "
+                    "nullptr."
+                );
+            break;
+            case AL_INVALID_ENUM:
+                throw std::runtime_error(
+                    "The specified format does not exist."
+                );
+            break;
         }
-    #endif
+    }
+#endif
+
 }
 
 /*----------------------------------------------------------------------------*/
@@ -145,29 +151,31 @@ void Buffer::setData(
 uint32_t Buffer::getAlProperty(const uint32_t property) {
     ALint value;
     alGetBufferi(m_al_buffer, property, &value);
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch (err) {
-                case AL_INVALID_ENUM:
-                    throw std::runtime_error(
-                        "The specified parameter is not valid."
-                    );
-                break;
-                case AL_INVALID_NAME:
-                    throw std::runtime_error(
-                        "The specified buffer doesn't have parameters (the NULL "
-                        "buffer), or doesn't exist."
-                    );
-                break;
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error(
-                        "The specified value pointer is not valid"
-                    );
-                break;
-            }
+
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch (err) {
+            case AL_INVALID_ENUM:
+                throw std::runtime_error(
+                    "The specified parameter is not valid."
+                );
+            break;
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified buffer doesn't have parameters (the NULL "
+                    "buffer), or doesn't exist."
+                );
+            break;
+            case AL_INVALID_VALUE:
+                throw std::runtime_error(
+                    "The specified value pointer is not valid"
+                );
+            break;
         }
-    #endif
+    }
+#endif
+
     return value;
 }
 

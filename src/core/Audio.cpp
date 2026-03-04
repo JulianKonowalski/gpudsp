@@ -65,7 +65,7 @@ Audio::~Audio(void) { this->stop(); }
 /*----------------------------------------------------------------------------*/
 
 void Audio::run(void) {
-    m_context.makeCurrent();
+    m_context.bind();
     
     gpudsp::al::Source source;
     gpudsp::al::Buffer buffers[2];

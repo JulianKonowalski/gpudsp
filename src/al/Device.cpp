@@ -33,17 +33,25 @@ Device::Device(
     const char* p_device_name = device_name.empty() ? 
         nullptr : device_name.c_str();
 
+#ifndef GPUDSP_AL_NOTHROW
     if (!(m_alc_device = alcOpenDevice((const ALCchar*)p_device_name))) { 
         throw std::runtime_error("Failed to create an audio device"); 
     }
+#else
+    m_alc_device = alcOpenDevice((const ALCchar*)p_device_name);
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
 
 Device::~Device(void) { 
+#ifndef GPUDSP_AL_NOTHROW
     if (!alcCloseDevice((ALCdevice*)m_alc_device)) {
         alcGetError((ALCdevice*)m_alc_device); // clear any error codes
     }
+#else
+    alcCloseDevice((ALCdevice*)m_alc_device)
+#endif
 }
 
 /*----------------------------------------------------------------------------*/

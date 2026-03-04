@@ -10,12 +10,17 @@ using namespace gpudsp::al;
 
 /*----------------------------------------------------------------------------*/
 
+std::vector<Context*> Context::s_contexts = {};
+
+/*----------------------------------------------------------------------------*/
+
 Context* Context::getCurrentContext(void) {
     ALCcontext* alc_context= alcGetCurrentContext();
     if (!alc_context) { return nullptr; }
     for (Context* context : s_contexts) {
         if (context->m_alc_context == alc_context) { return context; }
     }
+    return nullptr;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -42,6 +47,8 @@ Context::Context(
     paramsv.push_back(parameters.is_synchronous ? AL_TRUE : AL_FALSE);
     paramsv.push_back(0);
 
+    
+#ifndef GPUDSP_AL_NOTHROW
     if (!(m_alc_context = alcCreateContext((ALCdevice*)device.m_alc_device, paramsv.data()))) {
         switch(alcGetError((ALCdevice*)m_device->m_alc_device)) {
             case ALC_INVALID_VALUE: 
@@ -56,6 +63,9 @@ Context::Context(
             break;
         }
     }
+#else
+    m_alc_context = alcCreateContext((ALCdevice*)device.m_alc_device, paramsv.data());
+#endif
 
     s_contexts.push_back(this);
 }
@@ -74,9 +84,13 @@ Context::~Context(void) {
 /*----------------------------------------------------------------------------*/
 
 void Context::bind(void) {
+#ifndef GPUDSP_AL_NOTHROW
     if (!alcMakeContextCurrent((ALCcontext*)m_alc_context)) {
         throw std::runtime_error("The specified context is invalid.");
     }
+#else
+    alcMakeContextCurrent((ALCcontext*)m_alc_context);
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -90,18 +104,22 @@ void Context::unbind(void) {
 
 void Context::process(void) {
     alcProcessContext((ALCcontext*)m_alc_context);
+#ifndef GPUDSP_AL_NOTHROW
     if (alcGetError((ALCdevice*)m_device->m_alc_device) != ALC_NO_ERROR) {
         throw std::runtime_error("The specified context is invalid.");
     }
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
 
 void Context::suspend(void) {
     alcSuspendContext((ALCcontext*)m_alc_context);
+#ifndef GPUDSP_AL_NOTHROW
     if (alcGetError((ALCdevice*)m_device->m_alc_device) != ALC_NO_ERROR) {
         throw std::runtime_error("The specified context is invalid.");
     }
+#endif
 }
 
 /*----------------------------------------------------------------------------*/

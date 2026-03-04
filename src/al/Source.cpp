@@ -11,6 +11,8 @@ using namespace gpudsp::al;
 Source::Source(void) : m_al_source(0) {
     alGetError(); // clear any error codes
     alGenSources(1, &m_al_source);
+
+#ifndef GPUDSP_AL_NOTHROW
     if (!m_al_source) {
         switch(alGetError()) {
             case AL_OUT_OF_MEMORY:
@@ -32,6 +34,8 @@ Source::Source(void) : m_al_source(0) {
             break;
         }
     }
+#endif
+
 }
 
 /*----------------------------------------------------------------------------*/
@@ -45,21 +49,21 @@ Source::~Source(void) {
 
 void Source::play(void) {
     alSourcePlay(m_al_source);
-
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not "
-                        "valid.");
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("The is no current context.");
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified source name is not valid."
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error("The is no current context.");
+            break;
         }
-    #endif
+    }
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -67,41 +71,42 @@ void Source::play(void) {
 void Source::pause(void) {
     alSourcePause(m_al_source);
 
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not "
-                        "valid.");
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("The is no current context.");
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified source name is not valid."
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error("The is no current context.");
+            break;
         }
-    #endif
+    }
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
 
 void Source::stop(void) {
     alSourceStop(m_al_source);
-
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not "
-                        "valid.");
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("The is no current context.");
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified source name is not valid."
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error("The is no current context.");
+            break;
         }
-    #endif
+    }
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -109,27 +114,29 @@ void Source::stop(void) {
 void Source::attachBuffer(const Buffer& buffer) {
     alSourcei(m_al_source, AL_BUFFER, buffer.m_al_buffer);
 
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error("The value given is out of range.");
-                break;
-                case AL_INVALID_ENUM:
-                    throw std::runtime_error("The specified parameter is not "
-                        "valid.");
-                break;
-                case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source  name is "
-                        "not valid.");
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("There is no current context.");
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_VALUE:
+                throw std::runtime_error("The value given is out of range.");
+            break;
+            case AL_INVALID_ENUM:
+                throw std::runtime_error(
+                    "The specified parameter is not valid."
+                );
+            break;
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified source  name is not valid."
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error("There is no current context.");
+            break;
         }
-    #endif
+    }
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -139,27 +146,27 @@ void Source::queueBuffers(const std::vector<Buffer>& buffers) {
     for (int i = 0; i < buffers.size(); ++i) { buffer_ids[i] = buffers[i].m_al_buffer; }
     alSourceQueueBuffers(m_al_source, buffer_ids.size(), buffer_ids.data());
 
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_NAME:
-                    throw std::runtime_error(
-                        "At least one specified buffer name is not valid, or "
-                        "the specified source name is not valid."
-                    );
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error(
-                        "There is no current context, an attempt was made to "
-                        "add a new buffer which is not the same format as the "
-                        "buffers already in the queue, or the source already "
-                        "has a static buffer attached."
-                    );
-                break;                
-            }
-        }   
-    #endif
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "At least one specified buffer name is not valid, or "
+                    "the specified source name is not valid."
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error(
+                    "There is no current context, an attempt was made to "
+                    "add a new buffer which is not the same format as the "
+                    "buffers already in the queue, or the source already "
+                    "has a static buffer attached."
+                );
+            break;                
+        }
+    }   
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -168,27 +175,27 @@ uint32_t Source::unqueueOne(void) {
     uint32_t buffer_id;
     alSourceUnqueueBuffers(m_al_source, 1, &buffer_id);
     
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error(
-                        "At least one buffer can not be unqueued because it has "
-                        "not been processed yet."
-                    );
-                break;
-                case AL_INVALID_NAME:
-                    throw std::runtime_error(
-                        "The specified source name is not valid."
-                    );
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("The is no current context.");
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_VALUE:
+                throw std::runtime_error(
+                    "At least one buffer can not be unqueued because it has "
+                    "not been processed yet."
+                );
+            break;
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified source name is not valid."
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error("The is no current context.");
+            break;
         }
-    #endif
+    }
+#endif
 
     return buffer_id;
 }
@@ -196,15 +203,15 @@ uint32_t Source::unqueueOne(void) {
 /*----------------------------------------------------------------------------*/
 
 bool Source::isValid(void) {
-    #ifdef DEBUG
-        bool is_valid = alIsSource(m_al_source);
-        if (alGetError() != AL_NO_ERROR) {
-            throw std::runtime_error("There is no current context.");
-        }
-        return is_valid;
-    #else
-        return (bool)alIsSource(m_al_source);
-    #endif
+#ifndef GPUDSP_AL_NOTHROW
+    bool is_valid = alIsSource(m_al_source);
+    if (alGetError() != AL_NO_ERROR) {
+        throw std::runtime_error("There is no current context.");
+    }
+    return is_valid;
+#else
+    return (bool)alIsSource(m_al_source);
+#endif
 }
 
 /*----------------------------------------------------------------------------*/
@@ -233,31 +240,34 @@ uint32_t Source::getNumProcessedBuffers(void) { return this->getAlProperty(AL_BU
 /*----------------------------------------------------------------------------*/
 
 uint32_t Source::getAlProperty(const uint32_t property) {
-    int value;
+    ALint value;
     alGetSourcei(m_al_source, property, &value);
     
-    #ifdef DEBUG
-        ALenum err = alGetError();
-        if (err != AL_NO_ERROR) {
-            switch(err) {
-                case AL_INVALID_VALUE:
-                    throw std::runtime_error("The value pointer given is not "
-                        "valid.");
-                break;
-                case AL_INVALID_ENUM:
-                    throw std::runtime_error("The specified parameter is not "
-                        "valid.");
-                break;
-                case AL_INVALID_NAME:
-                    throw std::runtime_error("The specified source name is not "
-                        "valid");
-                break;
-                case AL_INVALID_OPERATION:
-                    throw std::runtime_error("There is no current context.");
-                break;
-            }
+#ifndef GPUDSP_AL_NOTHROW
+    ALenum err = alGetError();
+    if (err != AL_NO_ERROR) {
+        switch(err) {
+            case AL_INVALID_VALUE:
+                throw std::runtime_error(
+                    "The value pointer given is not valid."
+                );
+            break;
+            case AL_INVALID_ENUM:
+                throw std::runtime_error(
+                    "The specified parameter is not valid."
+                );
+            break;
+            case AL_INVALID_NAME:
+                throw std::runtime_error(
+                    "The specified source name is not valid"
+                );
+            break;
+            case AL_INVALID_OPERATION:
+                throw std::runtime_error("There is no current context.");
+            break;
         }
-    #endif
+    }
+#endif
 
     return value;
 }
