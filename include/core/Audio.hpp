@@ -37,9 +37,9 @@ public:
     };
 
     static Audio* getInstance(const AudioParameters& parameters = AudioParameters::Default());
-    inline uint16_t getSampleRate(void) { return m_parameters.sample_rate; }
-    inline uint16_t getBufferSize(void) { return m_parameters.buffer_size; }
-    inline bool isRunning(void) { return m_parameters.is_running; }
+    inline uint16_t getSampleRate(void) const { return m_parameters.sample_rate; }
+    inline uint16_t getBufferSize(void) const { return m_parameters.buffer_size; }
+    inline bool isRunning(void) const { return m_parameters.is_running; }
 
     inline void setCallback(const Callback& callback) { m_parameters.callback = callback; }
 
