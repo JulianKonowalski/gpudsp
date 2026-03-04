@@ -42,6 +42,22 @@ bool Buffer::isValid(void) { return (bool)alIsBuffer(m_al_buffer); }
 
 /*----------------------------------------------------------------------------*/
 
+uint32_t Buffer::getSize(void) { return this->getAlProperty(AL_SIZE); }
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Buffer::getBitDepth(void) { return this->getAlProperty(AL_BITS); }
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Buffer::getNumChannels(void) { return this->getAlProperty(AL_CHANNELS); }
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Buffer::getSampleRate(void) { return this->getAlProperty(AL_FREQUENCY); }
+
+/*----------------------------------------------------------------------------*/
+
 void Buffer::setData(
     const std::vector<uint8_t>& samples,
     const uint32_t sample_rate,
@@ -122,6 +138,37 @@ void Buffer::setData(
             }
         }
     #endif
+}
+
+/*----------------------------------------------------------------------------*/
+
+uint32_t Buffer::getAlProperty(const uint32_t property) {
+    ALint value;
+    alGetBufferi(m_al_buffer, property, &value);
+    #ifdef DEBUG
+        ALenum err = alGetError();
+        if (err != AL_NO_ERROR) {
+            switch (err) {
+                case AL_INVALID_ENUM:
+                    throw std::runtime_error(
+                        "The specified parameter is not valid."
+                    );
+                break;
+                case AL_INVALID_NAME:
+                    throw std::runtime_error(
+                        "The specified buffer doesn't have parameters (the NULL "
+                        "buffer), or doesn't exist."
+                    );
+                break;
+                case AL_INVALID_VALUE:
+                    throw std::runtime_error(
+                        "The specified value pointer is not valid"
+                    );
+                break;
+            }
+        }
+    #endif
+    return value;
 }
 
 /*----------------------------------------------------------------------------*/
