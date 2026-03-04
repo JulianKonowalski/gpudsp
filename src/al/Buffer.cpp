@@ -15,22 +15,11 @@ Buffer::Buffer(void) : m_al_buffer(0) {
 #ifndef GPUDSP_AL_NOTHROW
     if (!m_al_buffer) {
         switch (alGetError()) {
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "The buffer array isn't large enough to hold the number of "
-                    "buffers requested."
-                );
-            break;
-            case AL_OUT_OF_MEMORY:
-                throw std::runtime_error(
-                    "There is not enough memory available to generate all the "
-                    "buffers requested."
-                );
-            break;
+            case AL_INVALID_VALUE: throw std::runtime_error("The buffer array isn't large enough to hold the number of buffers requested.");
+            case AL_OUT_OF_MEMORY: throw std::runtime_error("There is not enough memory available to generate all the buffers requested.");
         }
     }
 #endif
-
 }
 
 /*----------------------------------------------------------------------------*/
@@ -79,28 +68,12 @@ void Buffer::setData(
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_OUT_OF_MEMORY:
-                throw std::runtime_error(
-                    "There is not enough memory available to create this "
-                    "buffer."
-                );
-            break;
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "The size parameter is not valid for the format "
-                    "specified, the buffer is in use, or the data is a "
-                    "nullptr."
-                );
-            break;
-            case AL_INVALID_ENUM:
-                throw std::runtime_error(
-                    "The specified format does not exist."
-                );
-            break;
+            case AL_OUT_OF_MEMORY:  throw std::runtime_error("There is not enough memory available to create this buffer.");
+            case AL_INVALID_VALUE:  throw std::runtime_error("The size parameter is not valid for the format specified, the buffer is in use, or the data is a nullptr.");
+            case AL_INVALID_ENUM:   throw std::runtime_error("The specified format does not exist.");
         }
     }
 #endif
-
 }
 
 /*----------------------------------------------------------------------------*/
@@ -122,28 +95,12 @@ void Buffer::setData(
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_OUT_OF_MEMORY:
-                throw std::runtime_error(
-                    "There is not enough memory available to create this "
-                    "buffer."
-                );
-            break;
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "The size parameter is not valid for the format "
-                    "specified, the buffer is in use, or the data is a "
-                    "nullptr."
-                );
-            break;
-            case AL_INVALID_ENUM:
-                throw std::runtime_error(
-                    "The specified format does not exist."
-                );
-            break;
+            case AL_OUT_OF_MEMORY:  throw std::runtime_error("There is not enough memory available to create this buffer.");
+            case AL_INVALID_VALUE:  throw std::runtime_error("The size parameter is not valid for the format specified, the buffer is in use, or the data is a nullptr.");
+            case AL_INVALID_ENUM:   throw std::runtime_error("The specified format does not exist.");
         }
     }
 #endif
-
 }
 
 /*----------------------------------------------------------------------------*/
@@ -156,22 +113,9 @@ uint32_t Buffer::getAlProperty(const uint32_t property) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch (err) {
-            case AL_INVALID_ENUM:
-                throw std::runtime_error(
-                    "The specified parameter is not valid."
-                );
-            break;
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified buffer doesn't have parameters (the NULL "
-                    "buffer), or doesn't exist."
-                );
-            break;
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "The specified value pointer is not valid"
-                );
-            break;
+            case AL_INVALID_ENUM:   throw std::runtime_error("The specified parameter is not valid.");
+            case AL_INVALID_NAME:   throw std::runtime_error("The specified buffer doesn't have parameters (the NULL buffer), or doesn't exist.");
+            case AL_INVALID_VALUE:  throw std::runtime_error("The specified value pointer is not valid");
         }
     }
 #endif

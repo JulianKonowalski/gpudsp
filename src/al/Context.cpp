@@ -51,16 +51,8 @@ Context::Context(
 #ifndef GPUDSP_AL_NOTHROW
     if (!(m_alc_context = alcCreateContext((ALCdevice*)device.m_alc_device, paramsv.data()))) {
         switch(alcGetError((ALCdevice*)m_device->m_alc_device)) {
-            case ALC_INVALID_VALUE: 
-                throw std::runtime_error(
-                    "An additional context can not be created for this device."
-                );
-            break;
-            case ALC_INVALID_DEVICE:
-                throw std::runtime_error(
-                    "The specified device is not a valid output device."
-                );
-            break;
+            case ALC_INVALID_VALUE:     throw std::runtime_error("An additional context can not be created for this device.");
+            case ALC_INVALID_DEVICE:    throw std::runtime_error("The specified device is not a valid output device.");
         }
     }
 #else

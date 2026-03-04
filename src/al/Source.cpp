@@ -15,27 +15,12 @@ Source::Source(void) : m_al_source(0) {
 #ifndef GPUDSP_AL_NOTHROW
     if (!m_al_source) {
         switch(alGetError()) {
-            case AL_OUT_OF_MEMORY:
-                throw std::runtime_error(
-                    "There is not enough memory to generate all the requested "
-                    "sources."
-                );
-            break;
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "There are not enough non-memory resources to create all "
-                    "the requested sources, or the array pointer is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error(
-                    "There is no context to create sources in."
-                );
-            break;
+            case AL_OUT_OF_MEMORY:      throw std::runtime_error("There is not enough memory to generate all the requested sources.");
+            case AL_INVALID_VALUE:      throw std::runtime_error("There are not enough non-memory resources to create all the requested sources, or the array pointer is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("There is no context to create sources in.");
         }
     }
 #endif
-
 }
 
 /*----------------------------------------------------------------------------*/
@@ -53,14 +38,8 @@ void Source::play(void) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified source name is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error("The is no current context.");
-            break;
+            case AL_INVALID_NAME:       throw std::runtime_error("The specified source name is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("The is no current context.");
         }
     }
 #endif
@@ -75,14 +54,8 @@ void Source::pause(void) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified source name is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error("The is no current context.");
-            break;
+            case AL_INVALID_NAME:       throw std::runtime_error("The specified source name is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("The is no current context.");
         }
     }
 #endif
@@ -96,14 +69,8 @@ void Source::stop(void) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified source name is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error("The is no current context.");
-            break;
+            case AL_INVALID_NAME:       throw std::runtime_error("The specified source name is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("The is no current context.");
         }
     }
 #endif
@@ -118,22 +85,10 @@ void Source::attachBuffer(const Buffer& buffer) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_VALUE:
-                throw std::runtime_error("The value given is out of range.");
-            break;
-            case AL_INVALID_ENUM:
-                throw std::runtime_error(
-                    "The specified parameter is not valid."
-                );
-            break;
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified source  name is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error("There is no current context.");
-            break;
+            case AL_INVALID_VALUE:      throw std::runtime_error("The value given is out of range.");
+            case AL_INVALID_ENUM:       throw std::runtime_error("The specified parameter is not valid.");
+            case AL_INVALID_NAME:       throw std::runtime_error("The specified source  name is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("There is no current context.");
         }
     }
 #endif
@@ -150,20 +105,9 @@ void Source::queueBuffers(const std::vector<Buffer>& buffers) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "At least one specified buffer name is not valid, or "
-                    "the specified source name is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error(
-                    "There is no current context, an attempt was made to "
-                    "add a new buffer which is not the same format as the "
-                    "buffers already in the queue, or the source already "
-                    "has a static buffer attached."
-                );
-            break;                
+            case AL_INVALID_NAME:       throw std::runtime_error("At least one specified buffer name is not valid, or the specified source name is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("There is no current context, an attempt was made to add a new buffer which is not the same "
+                                                                 "format as the buffers already in the queue, or the source already has a static buffer attached.");
         }
     }   
 #endif
@@ -179,20 +123,9 @@ uint32_t Source::unqueueOne(void) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "At least one buffer can not be unqueued because it has "
-                    "not been processed yet."
-                );
-            break;
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified source name is not valid."
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error("The is no current context.");
-            break;
+            case AL_INVALID_VALUE:      throw std::runtime_error("At least one buffer can not be unqueued because it has not been processed yet.");
+            case AL_INVALID_NAME:       throw std::runtime_error("The specified source name is not valid.");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("The is no current context.");
         }
     }
 #endif
@@ -247,24 +180,10 @@ uint32_t Source::getAlProperty(const uint32_t property) {
     ALenum err = alGetError();
     if (err != AL_NO_ERROR) {
         switch(err) {
-            case AL_INVALID_VALUE:
-                throw std::runtime_error(
-                    "The value pointer given is not valid."
-                );
-            break;
-            case AL_INVALID_ENUM:
-                throw std::runtime_error(
-                    "The specified parameter is not valid."
-                );
-            break;
-            case AL_INVALID_NAME:
-                throw std::runtime_error(
-                    "The specified source name is not valid"
-                );
-            break;
-            case AL_INVALID_OPERATION:
-                throw std::runtime_error("There is no current context.");
-            break;
+            case AL_INVALID_VALUE:      throw std::runtime_error("The value pointer given is not valid.");
+            case AL_INVALID_ENUM:       throw std::runtime_error("The specified parameter is not valid.");
+            case AL_INVALID_NAME:       throw std::runtime_error("The specified source name is not valid");
+            case AL_INVALID_OPERATION:  throw std::runtime_error("There is no current context.");
         }
     }
 #endif
