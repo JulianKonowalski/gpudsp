@@ -11,11 +11,8 @@ App* App::s_instance = nullptr;
 
 /*----------------------------------------------------------------------------*/
 
-App* App::getInstance(
-    const Audio::AudioParameters& audio_parameters,
-    const Window::WindowParameters& window_parameters
-) {
-    if (!s_instance) { s_instance = new App(audio_parameters, window_parameters); }
+App* App::getInstance(const AppParameters& parameters) {
+    if (!s_instance) { s_instance = new App(parameters); }
     return s_instance;
 }
 
@@ -34,18 +31,30 @@ void App::run(void) {
 /*----------------------------------------------------------------------------*/
 
 App::App(
-    const Audio::AudioParameters& audio_parameters,
-    const Window::WindowParameters& window_parameters
-) : m_audio(Audio::getInstance(audio_parameters)),
-    m_window(Window::getInstance(window_parameters)) 
-{
-    m_audio->setCallback(std::bind(
-        &App::audioCallback, this, 
-        std::placeholders::_1, 
-        std::placeholders::_2, 
-        std::placeholders::_3
-    ));
-}
+    const AppParameters& parameters
+) : m_audio(
+        Audio::getInstance({
+            std::bind(
+                &App::audioCallback, this, 
+                std::placeholders::_1, 
+                std::placeholders::_2, 
+                std::placeholders::_3
+            ),
+            parameters.audio_sample_rate,
+            2048,
+            false
+        })
+    ),
+    m_window(
+        Window::getInstance({
+            std::bind(
+                &App::eventCallback, this,
+                std::placeholders::_1
+            ),
+            "GPU DSP",
+            { parameters.screen_width, parameters.screen_height }
+        })
+    ) {}
 
 /*----------------------------------------------------------------------------*/
 
@@ -58,8 +67,14 @@ void App::audioCallback(
     uint16_t buffer_size,
     uint8_t num_channels
 ) {
-    std::memset(buffer, 0, buffer_size * num_channels * sizeof(float)); // temporary
-    // empty the internal ring buffer
+    if (!m_audio_buffer.readable()) { return; }
+    m_audio_buffer.readChunk(buffer);
+}
+
+/*----------------------------------------------------------------------------*/
+
+void App::eventCallback(Event& event) {
+
 }
 
 /*----------------------------------------------------------------------------*/
