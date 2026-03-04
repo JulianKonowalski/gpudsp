@@ -15,7 +15,7 @@ namespace gpudsp::core {
 
 /*----------------------------------------------------------------------------*/
 
-class Audio {
+class Audio final {
 public:
 
     using Callback = std::function<void(float*,uint16_t,uint8_t)>;

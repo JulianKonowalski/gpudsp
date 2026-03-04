@@ -53,7 +53,7 @@ public:
 private:
 
     struct Cursor {
-        std::array<double, 2> position = {0.0, 0.0};
+        std::array<double, 2> position = { 0.0, 0.0 };
         int active_button = -1;
         int mods = -1;
     };
