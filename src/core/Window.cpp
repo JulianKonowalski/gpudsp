@@ -17,33 +17,29 @@ void glfwKeyCallback(GLFWwindow* glfw_window, int key, int scancode, int action,
     Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
     if (!window) { return; }
 
-    Event* event = nullptr;
-    switch(action) {
-        case GLFW_PRESS:    event = new ButtonPressEvent(key, scancode, mods);      break;
-        case GLFW_RELEASE:  event = new ButtonReleaseEvent(key, scancode, mods);    break;
-        default:                                                                    return;
+    if (action == GLFW_PRESS) {
+        ButtonPressEvent event(key, scancode, mods);
+        window->raiseEvent(event);
+    } else if (action == GLFW_RELEASE) {
+        ButtonReleaseEvent event(key, scancode, mods);
+        window->raiseEvent(event);
     }
-    window->raiseEvent(*event); // passes the ownership !!!
 }
 
 void glfwMouseButtonCallback(GLFWwindow* glfw_window, int button, int action, int mods) {
     Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
     if (!window) { return; }
 
-    Event* event = nullptr;
-    switch(action) {
-        case GLFW_PRESS:
-            event = new MousePressEvent(window->getCursorPosition(), button, mods);
-            window->setCursorActiveButton(button);
-            window->setCursorMods(mods);
-        break;
-        case GLFW_RELEASE:
-            event = new MouseReleaseEvent(window->getCursorPosition(), button, mods);
-            if (button == window->getCursorActiveButton()) { window->setCursorActiveButton(-1); }
-        break;
-        default: return;
+    if (action == GLFW_PRESS) {
+        MousePressEvent event(window->getCursorPosition(), button, mods);
+        window->setCursorActiveButton(button);
+        window->setCursorMods(mods);
+        window->raiseEvent(event);
+    } else if (action == GLFW_RELEASE) {
+        MouseReleaseEvent event(window->getCursorPosition(), button, mods);
+        if (button == window->getCursorActiveButton()) { window->setCursorActiveButton(-1); }
+        window->raiseEvent(event);
     }
-    window->raiseEvent(*event); // passes the ownership !!!
 }
 
 void glfwMouseScrollCallback(GLFWwindow* glfw_window, double x_offset, double y_offset) {
@@ -83,11 +79,7 @@ void glfwFramebufferSizeCallback(GLFWwindow* glfw_window, int width, int height)
 
 /*----------------------------------------------------------------------------*/
 
-#include <iostream>
-
-const Window::EventCallback Window::s_default_event_callback = [](Event& event) {
-    std::cout << event.toString() << std::endl;
-};
+const Window::EventCallback Window::s_default_event_callback = [](Event& event) {};
 
 Window* Window::s_instance = nullptr;
 
