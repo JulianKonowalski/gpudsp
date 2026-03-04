@@ -38,6 +38,4 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE salad
 )
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG)
-
 #------------------------------------------------------------------------------#
