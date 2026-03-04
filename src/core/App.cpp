@@ -1,5 +1,6 @@
 #include "core/App.hpp"
 
+#include <cstring>
 #include <functional>
 
 using namespace gpudsp::core;
