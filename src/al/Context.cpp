@@ -10,7 +10,13 @@ using namespace gpudsp::al;
 
 /*----------------------------------------------------------------------------*/
 
-Context* Context::s_current = nullptr;
+Context* Context::getCurrentContext(void) {
+    ALCcontext* alc_context= alcGetCurrentContext();
+    if (!alc_context) { return nullptr; }
+    for (Context* context : s_contexts) {
+        if (context->m_alc_context == alc_context) { return context; }
+    }
+}
 
 /*----------------------------------------------------------------------------*/
 
@@ -40,33 +46,44 @@ Context::Context(
         switch(alcGetError((ALCdevice*)m_device->m_alc_device)) {
             case ALC_INVALID_VALUE: 
                 throw std::runtime_error(
-                    "An additional context can not be created for this device"
+                    "An additional context can not be created for this device."
                 );
             break;
             case ALC_INVALID_DEVICE:
                 throw std::runtime_error(
-                    "The specified device is not a valid output device"
+                    "The specified device is not a valid output device."
                 );
             break;
         }
     }
+
+    s_contexts.push_back(this);
 }
 
 /*----------------------------------------------------------------------------*/
 
 Context::~Context(void) {
-    if (alcGetCurrentContext() == m_alc_context) { alcMakeContextCurrent(nullptr); }
+    this->unbind();
     alcDestroyContext((ALCcontext*)m_alc_context);
     alcGetError((ALCdevice*)m_device->m_alc_device); // clear any error codes
+    for (auto it = s_contexts.begin(); it != s_contexts.end(); ++it) {
+        if (*it == this) { s_contexts.erase(it); }
+    }
 }
 
 /*----------------------------------------------------------------------------*/
 
-void Context::makeCurrent(void) {
+void Context::bind(void) {
     if (!alcMakeContextCurrent((ALCcontext*)m_alc_context)) {
-        throw std::runtime_error("The specified context is invalid");
+        throw std::runtime_error("The specified context is invalid.");
     }
-    s_current = this;
+}
+
+/*----------------------------------------------------------------------------*/
+
+void Context::unbind(void) {
+    if (alcGetCurrentContext() != m_alc_context ) { return; }
+    alcMakeContextCurrent(nullptr);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -74,7 +91,7 @@ void Context::makeCurrent(void) {
 void Context::process(void) {
     alcProcessContext((ALCcontext*)m_alc_context);
     if (alcGetError((ALCdevice*)m_device->m_alc_device) != ALC_NO_ERROR) {
-        throw std::runtime_error("The specified context is invalid");
+        throw std::runtime_error("The specified context is invalid.");
     }
 }
 
@@ -83,7 +100,7 @@ void Context::process(void) {
 void Context::suspend(void) {
     alcSuspendContext((ALCcontext*)m_alc_context);
     if (alcGetError((ALCdevice*)m_device->m_alc_device) != ALC_NO_ERROR) {
-        throw std::runtime_error("The specified context is invalid");
+        throw std::runtime_error("The specified context is invalid.");
     }
 }
 

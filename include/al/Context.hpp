@@ -2,6 +2,7 @@
 #define AL_CONTEXT_HPP
 #pragma once
 
+#include <vector>
 #include <cstdint>
 
 #include "al/Device.hpp"
@@ -29,20 +30,21 @@ public:
         bool is_synchronous = false;
     };
 
-    inline static Context* getCurrentContext(void) { return s_current; }
+    static Context* getCurrentContext(void);
 
     Context(Device& device, const ContextParameters& parameters = ContextParameters::Default());
     ~Context(void);
 
-    inline Device* getContextsDevice(void) { return m_device; }
+    inline Device& getContextsDevice(void) { return *m_device; }
     
-    void makeCurrent(void);
+    void bind(void);
+    void unbind(void);
     void process(void);
     void suspend(void);
 
 private:
 
-    static Context* s_current;
+    static std::vector<Context*> s_contexts;
 
     void* m_alc_context;
     Device* m_device;
