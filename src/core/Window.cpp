@@ -17,13 +17,8 @@ void glfwKeyCallback(GLFWwindow* glfw_window, int key, int scancode, int action,
     Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
     if (!window) { return; }
 
-    if (action == GLFW_PRESS) {
-        ButtonPressEvent event(key, scancode, mods);
-        window->raiseEvent(event);
-    } else if (action == GLFW_RELEASE) {
-        ButtonReleaseEvent event(key, scancode, mods);
-        window->raiseEvent(event);
-    }
+    if (action == GLFW_PRESS) { window->raiseEvent(new ButtonPressEvent(key, scancode, mods));
+    } else if (action == GLFW_RELEASE) { window->raiseEvent(new ButtonReleaseEvent(key, scancode, mods)); }
 }
 
 void glfwMouseButtonCallback(GLFWwindow* glfw_window, int button, int action, int mods) {
@@ -31,23 +26,19 @@ void glfwMouseButtonCallback(GLFWwindow* glfw_window, int button, int action, in
     if (!window) { return; }
 
     if (action == GLFW_PRESS) {
-        MousePressEvent event(window->getCursorPosition(), button, mods);
         window->setCursorActiveButton(button);
         window->setCursorMods(mods);
-        window->raiseEvent(event);
+        window->raiseEvent(new MousePressEvent(window->getCursorPosition(), button, mods));
     } else if (action == GLFW_RELEASE) {
-        MouseReleaseEvent event(window->getCursorPosition(), button, mods);
         if (button == window->getCursorActiveButton()) { window->setCursorActiveButton(-1); }
-        window->raiseEvent(event);
+        window->raiseEvent(new MouseReleaseEvent(window->getCursorPosition(), button, mods));
     }
 }
 
 void glfwMouseScrollCallback(GLFWwindow* glfw_window, double x_offset, double y_offset) {
     Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
     if (!window) { return; }
-
-    MouseScrollEvent event(window->getCursorPosition(), x_offset, y_offset);
-    window->raiseEvent(event);
+    window->raiseEvent(new MouseScrollEvent(window->getCursorPosition(), x_offset, y_offset));
 }
 
 void glfwMouseCursorPosCallback(GLFWwindow* glfw_window, double x_pos, double y_pos) {
@@ -55,31 +46,28 @@ void glfwMouseCursorPosCallback(GLFWwindow* glfw_window, double x_pos, double y_
     if (!window) { return; }
 
     if (window->getCursorActiveButton() >= 0) {
-        MouseDragEvent drag_event(
+        window->raiseEvent(new MouseDragEvent(
             window->getCursorPosition(),
             { x_pos, y_pos },
             window->getCursorActiveButton(),
             window->getCursorMods()
-        );
-        window->raiseEvent(drag_event);
+        ));
     }
 
-    MouseMoveEvent move_event({ x_pos, y_pos });
-    window->raiseEvent(move_event);
+    window->raiseEvent(new MouseMoveEvent({ x_pos, y_pos }));
 }
 
 void glfwFramebufferSizeCallback(GLFWwindow* glfw_window, int width, int height) {
     Window* window = (Window*)glfwGetWindowUserPointer(glfw_window);
     if (!window) { return; }
 
-    WindowResizeEvent event({ width, height });
     window->setSize({ width, height });
-    window->raiseEvent(event);
+    window->raiseEvent(new WindowResizeEvent({ width, height }));
 }
 
 /*----------------------------------------------------------------------------*/
 
-const Window::EventCallback Window::s_default_event_callback = [](Event& event) {};
+const Window::EventCallback Window::s_default_event_callback = [](Event* event) {};
 
 Window* Window::s_instance = nullptr;
 

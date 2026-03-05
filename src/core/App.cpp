@@ -23,8 +23,23 @@ void App::run(void) {
     m_window->makeCurrent();
     while(!m_window->shouldClose()) {
         m_window->update();
-        // empty the event queue
-        // render video & queue audio buffers
+
+        while (!m_event_queue.empty()) { 
+            Event* event = m_event_queue.front();
+            m_event_queue.pop();
+
+            for (Layer* layer : m_layers) {
+                layer->onEvent(event);
+                if (event->isHandled()) { break; }
+            }
+
+            delete event;
+        }
+
+        for (Layer* layer : m_layers) {
+            layer->onUpdate();
+            layer->onRender();
+        }
     }
 }
 
@@ -47,7 +62,9 @@ App::App(
 
 /*----------------------------------------------------------------------------*/
 
-App::~App(void) {}
+App::~App(void) {
+    for (Layer* layer : m_layers) { delete layer; }
+}
 
 /*----------------------------------------------------------------------------*/
 
@@ -62,8 +79,6 @@ void App::audioCallback(
 
 /*----------------------------------------------------------------------------*/
 
-void App::eventCallback(Event& event) {
-
-}
+void App::eventCallback(Event* event) { m_event_queue.push(event); }
 
 /*----------------------------------------------------------------------------*/

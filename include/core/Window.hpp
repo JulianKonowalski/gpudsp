@@ -13,7 +13,7 @@ namespace gpudsp::core {
 class Window final {
 public:
 
-    using EventCallback = std::function<void(Event&)>;
+    using EventCallback = std::function<void(Event*)>;
     static const EventCallback s_default_event_callback;
 
     struct WindowParameters {
@@ -38,7 +38,7 @@ public:
     void makeCurrent(void);
     bool shouldClose(void);
 
-    inline void raiseEvent(Event& event) { m_parameters.event_callback(event); }
+    inline void raiseEvent(Event* event) { m_parameters.event_callback(event); }
 
     inline std::array<int, 2> getSize(void) const { return m_parameters.size; }
     inline int getCursorActiveButton(void) const { return m_cursor.active_button; }

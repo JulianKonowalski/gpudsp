@@ -2,8 +2,11 @@
 #define CORE_APP_HPP
 #pragma once
 
+#include <queue>
+#include <vector>
 #include <cstdint>
 
+#include "core/Layer.hpp"
 #include "core/Audio.hpp"
 #include "core/Event.hpp"
 #include "core/Window.hpp"
@@ -35,9 +38,12 @@ public:
 
     static App* getInstance(const AppParameters& parameters = AppParameters::Default());
 
-    inline const Audio& getAudio(void) { return *m_audio; }
-    inline const Window& getWindow(void) { return *m_window; }
-    inline gpudsp::datastruct::RingBuffer<float>& getAudioBuffer(void) { return m_audio_buffer; }
+    inline static bool exists(void) { return (bool)s_instance; }
+    inline static const Audio& getAudio(void) { return *(s_instance->m_audio); }
+    inline static const Window& getWindow(void) { return *(s_instance->m_window); }
+    inline static gpudsp::datastruct::RingBuffer<float>& getAudioBuffer(void) { return s_instance->m_audio_buffer; }
+
+    inline void pushLayer(Layer* layer) { m_layers.push_back(layer); }
 
     void run(void);
 
@@ -47,13 +53,15 @@ private:
     ~App(void);
 
     void audioCallback(float* buffer, uint16_t buffer_size, uint8_t num_channels);
-    void eventCallback(Event& event);
+    void eventCallback(Event* event);
 
     static App* s_instance;
     
     Audio* m_audio;
     Window* m_window;
     gpudsp::datastruct::RingBuffer<float> m_audio_buffer;
+    std::queue<Event*> m_event_queue;
+    std::vector<Layer*> m_layers;
 
 };
 
