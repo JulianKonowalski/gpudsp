@@ -1,31 +1,41 @@
 #include "layers/AudioGenerator.hpp"
 
 #include <cmath>
+#include <string>
+
+#include <GLAD/glad.h>
 
 #include "core/App.hpp"
 
-
 using namespace gpudsp::layers;
+
+static const std::string s_shader_path(SHADER_PATH); 
 
 /*----------------------------------------------------------------------------*/
 
 AudioGenerator::AudioGenerator(
     void
 ) : m_audio_buffer(&gpudsp::core::App::getAudioBuffer()),
-    m_sample_rate(gpudsp::core::App::getAudio().getSampleRate()),
-    m_buffer_size(gpudsp::core::App::getAudio().getBufferSize()),
-    m_num_channels(gpudsp::core::App::getAudio().getNumChannels()),
-    m_buffer(new float[m_buffer_size * m_num_channels])
+    m_gl_ssbo(0)
 {
-    float angle = 0.0f;
-    float sample = 0.0f;
-    float offset = 2.0f * 3.1415f * 440.0f / (float)m_sample_rate;
-    for (int i = 0; i < m_buffer_size; ++i) {
-        sample = sinf(angle);
-        angle += offset;
-        angle -= angle < 2.0f * 3.1415f ? 0.0f : 2.0f * 3.1415f;
-        for (int j = 0; j < m_num_channels; ++j) { m_buffer[(m_num_channels * i) + j] = sample; }
-    }
+    const gpudsp::core::Audio& audio = gpudsp::core::App::getAudio();
+    m_kernel_size = audio.getBufferSize() / 256;
+
+    m_gl_program.attachShader(gpudsp::gl::Shader(
+        s_shader_path + std::string("sine.glsl"),
+        gpudsp::gl::Shader::Type::COMPUTE
+    ));
+    m_gl_program.link();
+
+    glGenBuffers(1, &m_gl_ssbo);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_gl_ssbo);
+    glBufferData(
+        GL_SHADER_STORAGE_BUFFER,
+        audio.getBufferSize() * audio.getNumChannels() * sizeof(float),
+        nullptr,
+        GL_DYNAMIC_COPY
+    );
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -36,7 +46,22 @@ AudioGenerator::~AudioGenerator(void) {}
 
 void AudioGenerator::onUpdate(void) {
     if (!m_audio_buffer->writeable()) { return; }
-    m_audio_buffer->writeChunk(m_buffer);
+
+    m_gl_program.bind();
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, m_gl_ssbo);
+
+    glDispatchCompute(m_kernel_size, 1, 1);
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, m_gl_ssbo);
+    float* chunk = (float*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_ONLY);
+    m_audio_buffer->writeChunk(chunk);
+
+    glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    gpudsp::gl::Program::unbindAll();
 }
 
 /*----------------------------------------------------------------------------*/

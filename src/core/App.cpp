@@ -20,7 +20,6 @@ App* App::getInstance(const AppParameters& parameters) {
 
 void App::run(void) {
     m_audio->start();
-    m_window->makeCurrent();
     while(!m_window->shouldClose()) {
         m_window->update();
 
@@ -58,7 +57,10 @@ App::App(
         "GPU DSP",
         { parameters.screen_width, parameters.screen_height }
     })),
-    m_audio_buffer(parameters.audio_chunk_size, parameters.audio_num_chunks) {}
+    m_audio_buffer(parameters.audio_buffer_size * 2, parameters.audio_num_buffers) // 2 stands for number of channels
+{
+    m_window->makeCurrent();
+}
 
 /*----------------------------------------------------------------------------*/
 

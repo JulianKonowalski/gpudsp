@@ -4,6 +4,8 @@
 
 #include "core/Layer.hpp"
 
+#include "gl/Program.hpp"
+
 #include "datastruct/RingBuffer.hpp"
 
 namespace gpudsp::layers {
@@ -22,11 +24,10 @@ public:
 
 private:
 
+    gpudsp::gl::Program m_gl_program;
     gpudsp::datastruct::RingBuffer<float>* m_audio_buffer;
-    uint16_t m_sample_rate;
-    uint16_t m_buffer_size;
-    uint8_t m_num_channels;
-    float* m_buffer;
+    uint32_t m_gl_ssbo;
+    uint32_t m_kernel_size;
 
 };
 

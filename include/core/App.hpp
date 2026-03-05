@@ -29,8 +29,8 @@ public:
          */
         inline static AppParameters Default(void) { return {}; }
 
-        size_t audio_num_chunks = 4;
-        size_t audio_chunk_size = 2048;
+        size_t audio_num_buffers = 4;
+        size_t audio_buffer_size = 2048;
         uint16_t audio_sample_rate = 44100;
         uint16_t screen_width = 400;
         uint16_t screen_height = 300;
