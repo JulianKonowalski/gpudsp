@@ -26,15 +26,18 @@ public:
          */
         inline static AppParameters Default(void) { return {}; }
 
+        size_t audio_num_chunks = 4;
+        size_t audio_chunk_size = 2048;
+        uint16_t audio_sample_rate = 44100;
         uint16_t screen_width = 400;
         uint16_t screen_height = 300;
-        uint16_t audio_sample_rate = 44100;
     };
 
     static App* getInstance(const AppParameters& parameters = AppParameters::Default());
 
     inline const Audio& getAudio(void) { return *m_audio; }
     inline const Window& getWindow(void) { return *m_window; }
+    inline gpudsp::datastruct::RingBuffer<float>& getAudioBuffer(void) { return m_audio_buffer; }
 
     void run(void);
 
@@ -50,7 +53,7 @@ private:
     
     Audio* m_audio;
     Window* m_window;
-    gpudsp::datastruct::RingBuffer<float, 2048, 4> m_audio_buffer;
+    gpudsp::datastruct::RingBuffer<float> m_audio_buffer;
 
 };
 
