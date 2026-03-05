@@ -37,6 +37,7 @@ public:
     };
 
     static Audio* getInstance(const AudioParameters& parameters = AudioParameters::Default());
+    inline uint8_t getNumChannels(void) const { return 2; } // for now only 2 are supported
     inline uint16_t getSampleRate(void) const { return m_parameters.sample_rate; }
     inline uint16_t getBufferSize(void) const { return m_parameters.buffer_size; }
     inline bool isRunning(void) const { return m_parameters.is_running; }

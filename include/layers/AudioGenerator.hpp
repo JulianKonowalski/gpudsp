@@ -25,6 +25,7 @@ private:
     gpudsp::datastruct::RingBuffer<float>* m_audio_buffer;
     uint16_t m_sample_rate;
     uint16_t m_buffer_size;
+    uint8_t m_num_channels;
     float* m_buffer;
 
 };
