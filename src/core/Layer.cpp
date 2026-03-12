@@ -1,5 +1,7 @@
 #include "core/Layer.hpp"
 
+#include <stdexcept>
+
 #include "core/App.hpp"
 
 using namespace gpudsp::core;

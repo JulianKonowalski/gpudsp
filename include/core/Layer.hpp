@@ -2,8 +2,6 @@
 #define CORE_LAYER_HPP
 #pragma once
 
-#include <stdexcept>
-
 #include "core/Event.hpp"
 
 namespace gpudsp::core {

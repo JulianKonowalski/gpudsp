@@ -40,6 +40,7 @@ target_link_libraries(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME}
 	PRIVATE SHADER_PATH="${CMAKE_SOURCE_DIR}/src/dsp/"
+    PRIVATE ASSETS_PATH="${CMAKE_SOURCE_DIR}/assets/"
 )
 
 #------------------------------------------------------------------------------#

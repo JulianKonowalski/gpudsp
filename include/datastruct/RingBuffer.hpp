@@ -38,10 +38,19 @@ public:
         m_looped = false;
     }
 
-    void writeChunk(T* input_buffer) {
+    void writeChunk(const T* input_buffer) {
         if (!this->writeable()) { return; }
         std::lock_guard<std::mutex> lock(m_mutex);
         std::memcpy(&m_buffer[m_data_end_idx * m_chunk_size], input_buffer, m_chunk_size * sizeof(T));
+        m_data_end_idx = (m_data_end_idx + 1) % m_num_chunks;
+        if (m_data_begin_idx == m_data_end_idx) { m_looped = true; }
+    }
+
+    void writeChunkPadded(const T* input_buffer, size_t data_size) {
+        if (data_size >= m_chunk_size) { this->writeChunk(input_buffer); return; }
+        std::lock_guard<std::mutex> lock(m_mutex);
+        std::memcpy(&m_buffer[m_data_end_idx * m_chunk_size], input_buffer, data_size * sizeof(T));
+        std::memset(&m_buffer[m_data_end_idx * m_chunk_size] + data_size, 0, (m_chunk_size - data_size) * sizeof(T));
         m_data_end_idx = (m_data_end_idx + 1) % m_num_chunks;
         if (m_data_begin_idx == m_data_end_idx) { m_looped = true; }
     }
