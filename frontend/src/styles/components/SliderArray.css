@@ -1,0 +1,11 @@
+.slider-array-label-container {
+    flex-grow: 0;
+    flex-shrink: 1;
+    height: 15%;
+    padding-top: 20px;
+}
+
+.slider-array-label {
+    padding: 0 0;
+    margin: 0;
+}

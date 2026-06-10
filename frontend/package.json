@@ -1,0 +1,27 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "frontend code of the GPU DSP webapp",
+  "license": "MIT",
+  "author": "Julian Konowalski",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve",
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "css-loader": "^7.1.4",
+    "file-loader": "^6.2.0",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.7",
+    "webpack-cli": "^7.0.2",
+    "webpack-dev-server": "^5.2.3"
+  },
+  "dependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "html-webpack-plugin": "^5.6.6",
+    "react-dom": "^19.2.5"
+  }
+}

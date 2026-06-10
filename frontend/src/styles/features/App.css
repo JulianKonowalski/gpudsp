@@ -1,0 +1,23 @@
+.app-audio-controls {
+    height: 50vh;
+    min-height: 250px;
+    max-height: 400px;
+    padding: 20px;
+    margin: 20px;
+}
+
+.app-input {
+    width: 25vw;
+    min-width: 60px;
+    max-width: 120px;
+}
+
+.app-equalizer {
+    width: 50vw;
+    min-width: 250px;
+    max-width: 600px;
+}
+
+canvas.gl_canvas {
+    display: none;
+}
